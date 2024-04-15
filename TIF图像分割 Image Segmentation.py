@@ -1,3 +1,4 @@
+
 from PIL import Image
 import tqdm
 
@@ -11,8 +12,8 @@ original_image_path = 'E:\\2025\\1\\cat.tif'
 img = Image.open(original_image_path)
 width, height = img.size
 
-# 获取原始图片的信息，以便在保存裁剪后的图片时保持相同品质
-original_info = img.info.copy()
+# 获取原始图片的信息，但JPEG格式不需要这部分信息，所以这里可省略（注：若原图有压缩等特殊设置需保留，则请保留这一步）
+# original_info = img.info.copy()
 
 # 计算每一份图片的宽度
 split_count = 25
@@ -33,9 +34,10 @@ with tqdm.tqdm(total=split_count) as pbar:
         # 裁剪图片
         cropped_img = img.crop(box)
 
-        # 保存裁剪后的图片为TIF格式，同时传递原始图片的信息以保持相同的品质
-        output_path = f'cropped_image_{i + 1}.tif'
-        cropped_img.save(output_path, format='TIFF', **original_info)
+        # 保存裁剪后的图片为JPEG格式
+        output_path = f'cropped_image_{i + 1}.jpg'
+        cropped_img.save(output_path, format='JPEG', quality=90)  # 这里可以调整JPEG质量，默认为75，范围为[1, 100]
 
         # 更新进度条
         pbar.update(1)
+
